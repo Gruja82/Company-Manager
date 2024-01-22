@@ -1,0 +1,116 @@
+﻿@page "/product"
+@page "/product/{id:int}"
+
+@if (Id == 0)
+{
+    <h3 class="text-center">New Product</h3>
+}
+else
+{
+    <h3 class="text-center">Product "@ProductModel!.Name"</h3>
+}
+
+<EditForm EditContext="Context" OnValidSubmit="SubmitAsync">
+    <DataAnnotationsValidator />
+
+    <div class="modal-body row">
+        <div class="col-md-6">
+            <h4 class="text-center mb-2">General Details</h4>
+            @if (Id == 0)
+            {
+                <div class="form-group mb-2">
+                    <img width="200" height="200" id="imgElement" />
+                </div>
+            }
+            else
+            {
+                <div class="form-group mb-2">
+                    <img width="200" height="200" id="imgElement" src="/images/Products/@ProductModel!.ImageUrl" />
+                </div>
+            }
+
+            <div class="form-group mb-2">
+                <label>Image</label>
+                <InputFile OnChange="@LoadFileAsync" id="inputFileElement" />
+            </div>
+
+            <div class="form-group mb-2">
+                <label><strong>Code</strong></label>
+                <InputText class="form-control" @bind-Value="ProductModel!.Code" placeholder="Enter Product Code" />
+                <ValidationMessage For="() => ProductModel!.Code" />
+            </div>
+            <div class="form-group mb-2">
+                <label><strong>Name</strong></label>
+                <InputText class="form-control" @bind-Value="ProductModel!.Name" placeholder="Enter Product Name" />
+                <ValidationMessage For="() => ProductModel!.Name" />
+            </div>
+            <div class="form-group mb-2">
+                <label><strong>Category</strong></label>
+                <InputSelect class="form-control" @bind-Value="ProductModel!.CategoryId">
+                    <option value="0">Select Category</option>
+                    @if (CategoryList != null)
+                    {
+                        @foreach (var category in CategoryList)
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => ProductModel!.CategoryId" />
+            </div>
+            <div class="form-group mb-2">
+                <label><strong>Quantity</strong></label>
+                <InputNumber class="form-control" @bind-Value="ProductModel!.Quantity" readonly />
+            </div>
+            <div class="form-group mb-2">
+                <label><strong>Price</strong></label>
+                <InputNumber class="form-control" @bind-Value="ProductModel!.Price" />
+                <ValidationMessage For="() => ProductModel!.Price" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h4 class="text-center mb-2">Production Specification</h4>
+            <select class="form-control-sm mb-1" @onchange="HandleMaterialChanged">
+                <option value="0">Select Material</option>
+                @foreach (var material in MaterialList!)
+                {
+                    <option value="@material.Id">@material.Name</option>
+                }
+            </select>
+            <input class="form-control-sm" @bind="materialQty" />
+
+            <button type="button" class="btn btn-success" @onclick="HandleAddMaterialClick">
+                Add
+            </button>
+
+            <div class="mt-2" style="overflow-y: scroll;height: 480px;">
+                @if (ProductModel!.ProductDetailDtos.Count > 0)
+                {
+                    @foreach (var material in ProductModel.ProductDetailDtos)
+                    {
+                        <input class="form-control mb-2" @bind="@material.MaterialName" readonly />
+                        <input class="form-control mb-2" @bind="@material.MaterialQty" readonly />
+                        <button type="button" class="btn btn-danger" @onclick="() => HandleRemoveMaterialClick(material.MaterialId)">
+                            Remove
+                        </button>
+                        <hr class="mb-2" />
+                    }
+                }   
+                <ValidationMessage For="() => ProductModel!.ProductDetailDtos" />
+                <label class="text-danger">@errorMessage</label>
+            </div>
+
+            <label><strong>Production Cost</strong></label>
+            <input @bind="@productionCost" class="form-control" readonly />
+        </div>
+
+        <div class="text-center mt-5">
+            <button class="btn btn-primary mb-2" type="submit">Submit</button>
+        </div>
+        
+    </div>
+</EditForm>
+
+<button hidden="@hidden" class="btn btn-danger" type="button" @onclick="DeleteAsync">
+    Delete
+</button>

@@ -1,0 +1,84 @@
+﻿@page "/customer"
+@page "/customer/{id:int}"
+
+@if (Id == 0)
+{
+    <h3 class="text-center">New Customer</h3>
+}
+else
+{
+    <h3 class="text-center">Customer "@CustomerModel!.Name"</h3>
+}
+
+<EditForm EditContext="Context" OnValidSubmit="SubmitAsync">
+    <DataAnnotationsValidator />
+
+    @if (Id == 0)
+    {
+        <div class="form-group mb-2">
+            <img width="200" height="200" id="imgElement" />
+        </div>
+    }
+    else
+    {
+        <div class="form-group mb-2">
+            <img width="200" height="200" id="imgElement" src="/images/Customers/@CustomerModel!.ImageUrl" />
+        </div>
+    }
+
+    <div class="form-group mb-2">
+        <label>Image</label>
+        <InputFile OnChange="@LoadFileAsync" id="inputFileElement" />
+    </div>
+
+    <div class="form-group mb-2">
+        <label><strong>Company Code</strong></label>
+        <InputText class="form-control" @bind-Value="CustomerModel!.Code" placeholder="Enter Company Code" />
+        <ValidationMessage For="()=>CustomerModel.Code" />
+    </div>
+    <div class="form-group mb-2">
+        <label><strong>Company Name</strong></label>
+        <InputText class="form-control" @bind-Value="CustomerModel!.Name" placeholder="Enter Company Name" />
+        <ValidationMessage For="()=>CustomerModel.Name" />
+    </div>
+    <div class="form-group mb-2">
+        <label><strong>Contact Name</strong></label>
+        <InputText class="form-control" @bind-Value="CustomerModel!.Contact" placeholder="Enter Contact Name" />
+        <ValidationMessage For="()=>CustomerModel.Contact" />
+    </div>
+    <div class="form-group mb-2">
+        <label><strong>Address</strong></label>
+        <InputTextArea class="form-control" @bind-Value="CustomerModel!.Address" placeholder="Enter Address" />
+        <ValidationMessage For="()=>CustomerModel.Address" />
+    </div>
+    <div class="form-group mb-2">
+        <label><strong>City</strong></label>
+        <InputText class="form-control" @bind-Value="CustomerModel!.City" placeholder="Enter City" />
+        <ValidationMessage For="()=>CustomerModel.City" />
+    </div>
+    <div class="form-group mb-2">
+        <label><strong>Postal Code</strong></label>
+        <InputText class="form-control" @bind-Value="CustomerModel!.Postal" placeholder="Enter Postal Code" />
+        <ValidationMessage For="()=>CustomerModel.Postal" />
+    </div>
+    <div class="form-group mb-2">
+        <label><strong>Phone</strong></label>
+        <InputText class="form-control" @bind-Value="CustomerModel!.Phone" placeholder="Enter Phone" />
+        <ValidationMessage For="()=>CustomerModel.Phone" />
+    </div>
+    <div class="form-group mb-2">
+        <label><strong>Email</strong></label>
+        <InputText class="form-control" @bind-Value="CustomerModel!.Email" placeholder="Enter Email" />
+        <ValidationMessage For="()=>CustomerModel.Email" />
+    </div>
+    <div class="form-group mb-2">
+        <label><strong>Web Address</strong></label>
+        <InputText class="form-control" @bind-Value="CustomerModel!.Web" placeholder="Enter Web Address" />
+    </div>
+
+    <button class="btn btn-primary mb-2" type="submit">Submit</button>
+</EditForm>
+
+<button hidden="@hidden" class="btn btn-danger" type="button" @onclick="DeleteAsync">
+    Delete
+</button>

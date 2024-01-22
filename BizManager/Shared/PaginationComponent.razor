@@ -1,0 +1,62 @@
+﻿@* Pagination reusable component *@
+@typeparam TItem
+
+<nav>
+    <nav>
+        <ul class="pagination">
+            @if (PaginationType.PageIndex > 1)
+            {
+                <li class="page-item">
+                    <button class="page-link" type="button" @onclick="(() => PageNumberChanged.InvokeAsync(PaginationType.PageIndex - 1))">
+                        <span aria-hidden="true">&laquo;</span>
+                    </button>
+                </li>
+            }
+
+            @for (int i = 1; i <= PaginationType.TotalPages; i++)
+            {
+                int temp = i;
+
+                if (temp == PaginationType.PageIndex)
+                {
+                    <li class="page-item">
+                        <span class="btn btn-info">@temp</span>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <button class="btn btn-outline-info" type="button" value="@temp" @onclick="(() => PageNumberChanged.InvokeAsync(temp))">
+                            @temp
+                        </button>
+                    </li>
+                }
+            }
+
+            @if (PaginationType.PageIndex < PaginationType.TotalPages)
+            {
+                <li class="page-item">
+                    <button class="page-link" type="button" name="pageIndex" @onclick="(() => PageNumberChanged.InvokeAsync(PaginationType.PageIndex + 1))">
+                        <span aria-hidden="true">&raquo;</span>
+                    </button>
+                </li>
+            }
+        </ul>
+        Page size:
+        <input class="rounded" @bind="@PaginationType.PageSize" type="number" />
+        <button type="button" class="btn btn-outline-success my-2 my-sm-0" @onclick="@(() => PageSizeChanged.InvokeAsync(PaginationType.PageSize))">
+            Change
+        </button>
+    </nav>
+</nav>
+
+@code {
+    [Parameter]
+    public Pagination<TItem> PaginationType { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<int> PageNumberChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<int> PageSizeChanged { get; set; }
+}

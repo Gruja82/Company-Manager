@@ -1,0 +1,61 @@
+﻿@page "/materials"
+
+<PageTitle>Materials List</PageTitle>
+
+<h1 class="text-center">Materials</h1>
+
+<div class="text-end">
+    <button type="button" class="btn btn-primary text-end" @onclick="NavigateToCreatePage">
+        Create New
+    </button>
+</div>
+
+@if (MaterialList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <SearchComponent SearchTextChanged="HandleSearchClickAsync" />
+
+    <select class="form-select-sm mt-2" @onchange="HandleCategoryChangedAsync">
+        <option value="0">Select Category</option>
+        @if (CategoryList != null)
+        {
+            @foreach (var category in CategoryList)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
+        }
+    </select>
+
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Code</th>
+                <th scope="col">Name</th>
+                <th scope="col">Category</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var material in MaterialList.DataList)
+            {
+                <tr>
+                    <td>@material.Code</td>
+                    <td>@material.Name</td>
+                    <td>@material.CategoryName</td>
+                    <td>@material.Quantity</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" @onclick="(() => NavigateToEditPage(material.Id))">
+                            Edit
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <PaginationComponent PaginationType="MaterialList" PageNumberChanged="HandlePageChangedClickAsync" PageSizeChanged="HandlePageSizeChangedAsync" />
+}

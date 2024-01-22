@@ -1,0 +1,89 @@
+﻿@page "/order"
+@page "/order/{id:int}"
+
+@if (Id == 0)
+{
+    <h3 class="text-center">New Order</h3>
+}
+else
+{
+    <h3 class="text-center">Order "@OrderModel!.Code"</h3>
+}
+
+<EditForm EditContext="Context" OnValidSubmit="SubmitAsync">
+    <DataAnnotationsValidator />
+
+    <div class="modal-body row">
+        <div class="col-md-6">
+            <div class="form-group mb-2">
+                <label><strong>Code</strong></label>
+                <InputText class="form-control" @bind-Value="OrderModel!.Code" placeholder="Enter Order Code" />
+                <ValidationMessage For="() => OrderModel!.Code" />
+            </div>
+            <div class="form-group mb-2">
+                <label><strong>Order Date</strong></label>
+                <InputDate class="form-control" @bind-Value="OrderModel!.OrderDate" placeholder="Enter Order Date" />
+                <ValidationMessage For="() => OrderModel!.OrderDate" />
+            </div>
+            <div class="form-group mb-2">
+                <label><strong>Customer</strong></label>
+                <InputSelect class="form-control" @bind-Value="OrderModel!.CustomerId">
+                    <option value="0">Select Customer</option>
+                    @if (CustomerList != null)
+                    {
+                        @foreach (var customer in CustomerList)
+                        {
+                            <option value="@customer.Id">@customer.Name</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => OrderModel!.CustomerId" />
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <select class="form-control" @onchange="HandleProductChanged">
+                <option value="0">Select Product</option>
+                @if (ProductList != null)
+                {
+                    @foreach (var product in ProductList)
+                    {
+                        <option value="@product.Id">@product.Name</option>
+                    }
+                }
+            </select>
+
+            <input class="form-control" @bind="@productQty" />
+
+            <button type="button" class="btn btn-success" @onclick="HandleAddProductClick">
+                Add
+            </button>
+
+            <div style="overflow-y: scroll;height: 500px;">
+                @if (OrderModel!.OrderDetailDtos.Count > 0)
+                {
+                    @foreach (var orderDetailDto in OrderModel.OrderDetailDtos)
+                    {
+                        <input class="form-control" @bind="orderDetailDto.ProductName" readonly />
+                        <input class="form-control" @bind="orderDetailDto.Quantity" readonly />
+                        <button type="button" class="btn btn-danger" @onclick="() => HandleRemoveProductClick(orderDetailDto.ProductId)">
+                            Remove
+                        </button>
+                        <hr class="mb-2" />
+                    }
+                }
+
+                <ValidationMessage For="() => OrderModel!.OrderDetailDtos" />
+
+                <label class="text-danger">@errorMessage</label>
+                <label><strong>Order Total</strong></label>
+                <input class="form-control" @bind="orderTotal" readonly />
+            </div>
+        </div>
+        <button class="btn btn-primary mb-2" type="submit">Submit</button>
+    </div>
+</EditForm>
+
+<button type="button" class="btn btn-danger" hidden="@hidden" @onclick="DeleteAsync">
+    Delete
+</button>

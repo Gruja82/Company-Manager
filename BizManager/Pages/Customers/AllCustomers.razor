@@ -1,0 +1,48 @@
+﻿@page "/customers"
+
+<PageTitle>Customers List</PageTitle>
+
+<h1 class="text-center">Customers</h1>
+
+<div class="text-end">
+    <button type="button" class="btn btn-primary text-end" @onclick="NavigateToCreatePage">
+        Create New
+    </button>
+</div>
+
+@if (CustomerList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <SearchComponent SearchTextChanged="HandleSearchClickAsync" />
+
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Code</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in CustomerList.DataList)
+            {
+                <tr>
+                    <td>@customer.Code</td>
+                    <td>@customer.Name</td>
+                    <td>@customer.Email</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" @onclick="(() => NavigateToEditPage(customer.Id))">
+                            Edit
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <PaginationComponent PaginationType="CustomerList" PageNumberChanged="HandlePageChangedClickAsync" PageSizeChanged="HandlePageSizeChangedAsync" />
+}

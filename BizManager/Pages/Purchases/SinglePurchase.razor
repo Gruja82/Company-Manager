@@ -1,0 +1,89 @@
+﻿@page "/purchase"
+@page "/purchase/{id:int}"
+
+@if (Id == 0)
+{
+    <h3 class="text-center">New Purchase</h3>
+}
+else
+{
+    <h3 class="text-center">Purchase "@PurchaseModel!.Code"</h3>
+}
+
+<EditForm EditContext="Context" OnValidSubmit="SubmitAsync">
+    <DataAnnotationsValidator />
+
+    <div class="modal-body row">
+        <div class="col-md-6">
+            <div class="form-group mb-2">
+                <label><strong>Code</strong></label>
+                <InputText class="form-control" @bind-Value="PurchaseModel!.Code" placeholder="Enter Purchase Code" />
+                <ValidationMessage For="() => PurchaseModel!.Code" />
+            </div>
+            <div class="form-group mb-2">
+                <label><strong>Purchase Date</strong></label>
+                <InputDate class="form-control" @bind-Value="PurchaseModel!.PurchaseDate" placeholder="Enter Purchase Date" />
+                <ValidationMessage For="() => PurchaseModel!.PurchaseDate" />
+            </div>
+            <div class="form-group mb-2">
+                <label><strong>Supplier</strong></label>
+                <InputSelect class="form-control" @bind-Value="PurchaseModel!.SupplierId">
+                    <option value="0">Select Supplier</option>
+                    @if (SupplierList != null)
+                    {
+                        @foreach (var supplier in SupplierList)
+                        {
+                            <option value="@supplier.Id">@supplier.Name</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => PurchaseModel!.SupplierId" />
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <select class="form-control" @onchange="HandleMaterialChanged">
+                <option value="0">Select Material</option>
+                @if (MaterialList != null)
+                {
+                    @foreach (var material in MaterialList)
+                    {
+                        <option value="@material.Id">@material.Name</option>
+                    }
+                }
+            </select>
+
+            <input class="form-control" @bind="@materialQty" />
+
+            <button type="button" class="btn btn-success" @onclick="HandleAddMaterialClick">
+                Add
+            </button>
+
+            <div style="overflow-y: scroll;height: 500px;">
+                @if (PurchaseModel!.PurchaseDetailDtos.Count > 0)
+                {
+                    @foreach (var purchaseDetailDto in PurchaseModel.PurchaseDetailDtos)
+                    {
+                        <input class="form-control" @bind="purchaseDetailDto.MaterialName" readonly />
+                        <input class="form-control" @bind="purchaseDetailDto.Quantity" readonly />
+                        <button type="button" class="btn btn-danger" @onclick="() => HandleRemoveMaterialClick(purchaseDetailDto.MaterialId)">
+                            Remove
+                        </button>
+                        <hr class="mb-2" />
+                    }
+                }
+
+                <ValidationMessage For="() => PurchaseModel!.PurchaseDetailDtos" />
+
+                <label class="text-danger">@errorMessage</label>
+                <label><strong>Purchase Total</strong></label>
+                <input class="form-control" @bind="@purchaseTotal" readonly />
+            </div>
+        </div>
+        <button class="btn btn-primary mb-2" type="submit">Submit</button>
+    </div>
+</EditForm>
+
+<button type="button" class="btn btn-danger" hidden="@hidden" @onclick="DeleteAsync">
+    Delete
+</button>

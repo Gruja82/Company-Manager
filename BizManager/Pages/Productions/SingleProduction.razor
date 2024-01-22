@@ -1,0 +1,51 @@
+﻿@page "/production"
+@page "/production/{id:int}"
+
+@if (Id == 0)
+{
+    <h3 class="text-center">New Production</h3>
+}
+else
+{
+    <h3 class="text-center">Production "@ProductionModel!.Code"</h3>
+}
+
+<EditForm EditContext="Context" OnValidSubmit="SubmitAsync">
+    <DataAnnotationsValidator />
+
+    <div class="form-group mb-2">
+        <label><strong>Code</strong></label>
+        <InputText class="form-control" @bind-Value="ProductionModel!.Code" placeholder="Enter Production Code" />
+        <ValidationMessage For="() => ProductionModel.Code" />
+    </div>
+    <div class="form-group mb-2">
+        <label><strong>Production Date</strong></label>
+        <InputDate class="form-control" @bind-Value="ProductionModel!.ProductionDate" placeholder="Enter Production Date" />
+        <ValidationMessage For="() => ProductionModel.ProductionDate" />
+    </div>
+    <div class="form-group mb-2">
+        <label><strong>Product</strong></label>
+        <InputSelect class="form-control" @bind-Value="ProductionModel!.ProductId">
+            <option value="0">Select Product</option>
+            @if (ProductList != null)
+            {
+                @foreach (var product in ProductList)
+                {
+                    <option value="@product.Id">@product.Name</option>
+                }
+            }
+        </InputSelect>
+        <ValidationMessage For="() => ProductionModel!.ProductId" />
+    </div>
+    <div class="form-group mb-2">
+        <label><strong>Quantity</strong></label>
+        <InputNumber class="form-control" @bind-Value="ProductionModel!.Quantity" placeholder="Enter Material Quantity" />
+        <ValidationMessage For="() => ProductionModel!.Quantity" />
+    </div>
+
+    <button class="btn btn-primary mb-2" type="submit">Submit</button>
+</EditForm>
+
+<button hidden="@hidden" class="btn btn-danger" type="button" @onclick="DeleteAsync">
+    Delete
+</button>

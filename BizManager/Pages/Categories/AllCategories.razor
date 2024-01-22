@@ -1,0 +1,47 @@
+﻿@page "/categories"
+
+<PageTitle>Categories List</PageTitle>
+
+<h1 class="text-center">Categories</h1>
+
+<div class="text-end">
+    <button type="button" class="btn btn-primary text-end" @onclick="NavigateToCreatePage">
+        Create New
+    </button>
+</div>
+
+@if (CategoryList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <SearchComponent SearchTextChanged="HandleSearchClickAsync" />
+
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Code</th>
+                <th scope="col">Name</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in CategoryList.DataList)
+            {
+                <tr>
+                    <td>@category.Code</td>
+                    <td>@category.Name</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" @onclick="(() => NavigateToEditPage(category.Id))">
+                            Edit
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <PaginationComponent PaginationType="CategoryList" PageNumberChanged="HandlePageChangedClickAsync" PageSizeChanged="HandlePageSizeChangedAsync" />
+}
+

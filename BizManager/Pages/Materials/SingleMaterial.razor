@@ -1,0 +1,78 @@
+﻿@page "/material"
+@page "/material/{id:int}"
+
+@if (Id == 0)
+{
+    <h3 class="text-center">New Material</h3>
+}
+else
+{
+    <h3 class="text-center">Material "@MaterialModel!.Name"</h3>
+}
+
+<EditForm EditContext="Context" OnValidSubmit="SubmitAsync">
+    <DataAnnotationsValidator />
+
+    @if (Id == 0)
+    {
+        <div class="form-group mb-2">
+            <img width="200" height="200" id="imgElement" />
+        </div>
+    }
+    else
+    {
+        <div class="form-group mb-2">
+            <img width="200" height="200" id="imgElement" src="/images/Materials/@MaterialModel!.ImageUrl" />
+        </div>
+    }
+
+    <div class="form-group mb-2">
+        <label>Image</label>
+        <InputFile OnChange="@LoadFileAsync" id="inputFileElement" />
+    </div>
+
+    <div class="form-group mb-2">
+        <label><strong>Code</strong></label>
+        <InputText class="form-control" @bind-Value="MaterialModel!.Code" placeholder="Enter Material Code" />
+        <ValidationMessage For="() => MaterialModel!.Code" />
+    </div>
+    <div class="form-group mb-2">
+        <label><strong>Name</strong></label>
+        <InputText class="form-control" @bind-Value="MaterialModel!.Name" placeholder="Enter Material Name" />
+        <ValidationMessage For="() => MaterialModel!.Name" />
+    </div>
+    <div class="form-group mb-2">
+        <label><strong>Category</strong></label>
+        <InputSelect class="form-control" @bind-Value="MaterialModel!.CategoryId">
+            <option value="0">Select Category</option>
+            @if (CategoryList != null)
+            {
+                @foreach (var category in CategoryList)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            }
+        </InputSelect>
+        <ValidationMessage For="() => MaterialModel!.CategoryId" />
+    </div>
+    <div class="form-group mb-2">
+        <label><strong>Quantity</strong></label>
+        <InputNumber class="form-control" @bind-Value="MaterialModel!.Quantity" readonly />
+    </div>
+    <div class="form-group mb-2">
+        <label><strong>Unit of Measure</strong></label>
+        <InputText class="form-control" @bind-Value="MaterialModel!.Unit" placeholder="Enter Material Unit" />
+        <ValidationMessage For="() => MaterialModel!.Unit" />
+    </div>
+    <div class="form-group mb-2">
+        <label><strong>Price</strong></label>
+        <InputNumber class="form-control" @bind-Value="MaterialModel!.Price" placeholder="Enter Material Price" />
+        <ValidationMessage For="() => MaterialModel!.Price" />
+    </div>
+
+    <button class="btn btn-primary mb-2" type="submit">Submit</button>
+</EditForm>
+
+<button hidden="@hidden" class="btn btn-danger" type="button" @onclick="DeleteAsync">
+    Delete
+</button>

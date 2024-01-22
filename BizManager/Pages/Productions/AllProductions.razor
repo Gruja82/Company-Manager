@@ -1,0 +1,70 @@
+﻿@page "/productions"
+
+<PageTitle>Production List</PageTitle>
+
+<h1 class="text-center">Productions</h1>
+
+<div class="text-end">
+    <button type="button" class="btn btn-primary text-end" @onclick="NavigateToCreatePage">
+        Create New
+    </button>
+</div>
+
+@if (ProductionList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <SearchComponent SearchTextChanged="HandleSearchClickAsync" />
+
+    <select class="form-select-sm mt-2" @onchange="HandleProductChangedAsync">
+        <option value="0">Select Product</option>
+        @if (ProductList != null)
+        {
+            @foreach (var product in ProductList)
+            {
+                <option value="@product.Id">@product.Name</option>
+            }
+        }
+    </select>
+
+    <select class="form-select-sm mt-2 m-lg-2" @onchange="HandleDateChangedAsync">
+        <option value="@string.Empty">Select Production Date</option>
+        @if (DatesList != null)
+        {
+            @foreach(var date in DatesList)
+            {
+                <option>@date</option>
+            }
+        }
+    </select>
+
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Code</th>
+                <th scope="col">Production Date</th>
+                <th scope="col">Product</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var production in ProductionList.DataList)
+            {
+                <tr>
+                    <td>@production.Code</td>
+                    <td>@production.ProductionDate.ToShortDateString()</td>
+                    <td>@production.ProductName</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" @onclick="(() => NavigateToEditPage(production.Id))">
+                            Edit
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <PaginationComponent PaginationType="ProductionList" PageNumberChanged="HandlePageChangedClickAsync" PageSizeChanged="HandlePageSizeChangedAsync" />
+}

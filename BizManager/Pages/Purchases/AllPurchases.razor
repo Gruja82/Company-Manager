@@ -1,0 +1,81 @@
+﻿@page "/purchases"
+
+<PageTitle>Purchases List</PageTitle>
+
+<h1 class="text-center">Purchases</h1>
+
+<div class="text-end">
+    <button type="button" class="btn btn-primary text-end" @onclick="NavigateToCreatePage">
+        Create New
+    </button>
+</div>
+
+@if (PurchaseList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <SearchComponent SearchTextChanged="HandleSearchClickAsync" />
+
+    <select class="form-select-sm mt-2" @onchange="HandleDateChangedAsync">
+        <option value="@string.Empty">Select Date</option>
+        @if (PurchaseDates != null)
+        {
+            @foreach (var purchaseDate in PurchaseDates)
+            {
+                <option>@purchaseDate</option>
+            }
+        }
+    </select>
+
+    <select class="form-select-sm mt-2 m-lg-2" @onchange="HandleSupplierChangedAsync">
+        <option value="0">Select Supplier</option>
+        @if (SupplierList != null)
+        {
+            @foreach (var supplier in SupplierList)
+            {
+                <option value="@supplier.Id">@supplier.Name</option>
+            }
+        }
+    </select>
+
+    <select class="form-select-sm mt-2" @onchange="HandleMaterialChangedAsync">
+        <option value="0">Select Material</option>
+        @if (MaterialList != null)
+        {
+            @foreach (var material in MaterialList)
+            {
+                <option value="@material.Id">@material.Name</option>
+            }
+        }
+    </select>
+
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Code</th>
+                <th scope="col">Purchase Date</th>
+                <th scope="col">Supplier</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var purchase in PurchaseList.DataList)
+            {
+                <tr>
+                    <td>@purchase.Code</td>
+                    <td>@purchase.PurchaseDate.ToShortDateString()</td>
+                    <td>@purchase.SupplierName</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" @onclick="(() => NavigateToEditPage(purchase.Id))">
+                            Edit
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <PaginationComponent PaginationType="PurchaseList" PageNumberChanged="HandlePageChangedClickAsync" PageSizeChanged="HandlePageSizeChangedAsync" />
+}

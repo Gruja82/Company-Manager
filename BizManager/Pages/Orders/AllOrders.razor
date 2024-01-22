@@ -1,0 +1,81 @@
+﻿@page "/orders"
+
+<PageTitle>Orders List</PageTitle>
+
+<h1 class="text-center">Orders</h1>
+
+<div class="text-end">
+    <button type="button" class="btn btn-primary text-end" @onclick="NavigateToCreatePage">
+        Create New
+    </button>
+</div>
+
+@if (OrderList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <SearchComponent SearchTextChanged="HandleSearchClickAsync" />
+
+    <select class="form-select-sm mt-2" @onchange="HandleDateChangedAsync">
+        <option value="@string.Empty">Select Date</option>
+        @if (OrderDates != null)
+        {
+            @foreach (var orderDate in OrderDates)
+            {
+                <option>@orderDate</option>
+            }
+        }
+    </select>
+
+    <select class="form-select-sm mt-2 m-lg-2" @onchange="HandleCustomerChangedAsync">
+        <option value="0">Select Customer</option>
+        @if (CustomerList != null)
+        {
+            @foreach (var customer in CustomerList)
+            {
+                <option value="@customer.Id">@customer.Name</option>
+            }
+        }
+    </select>
+
+    <select class="form-select-sm mt-2" @onchange="HandleProductChangedAsync">
+        <option value="0">Select Product</option>
+        @if (ProductList != null)
+        {
+            @foreach (var product in ProductList)
+            {
+                <option value="@product.Id">@product.Name</option>
+            }
+        }
+    </select>
+
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Code</th>
+                <th scope="col">Order Date</th>
+                <th scope="col">Customer</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in OrderList.DataList)
+            {
+                <tr>
+                    <td>@order.Code</td>
+                    <td>@order.OrderDate.ToShortDateString()</td>
+                    <td>@order.CustomerName</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" @onclick="(() => NavigateToEditPage(order.Id))">
+                            Edit
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <PaginationComponent PaginationType="OrderList" PageNumberChanged="HandlePageChangedClickAsync" PageSizeChanged="HandlePageSizeChangedAsync" />
+}

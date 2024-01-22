@@ -1,0 +1,14 @@
+﻿@* Search bar reusable child component *@
+<div class="input-group rounded">
+    <input @bind="@searchText" class="rounded" type="search" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+    <button type="button" class="btn btn-outline-success my-2 my-sm-0" @onclick="(() => SearchTextChanged.InvokeAsync(searchText))">
+        Search
+    </button>
+</div>
+
+@code {
+    private string? searchText;
+
+    [Parameter]
+    public EventCallback<string> SearchTextChanged { get; set; }
+}
