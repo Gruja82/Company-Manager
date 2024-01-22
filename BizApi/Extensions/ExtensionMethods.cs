@@ -132,6 +132,11 @@ namespace BizApi.Extensions
 
                 string filePath = Path.Combine(imagesFolder, imageFileName);
 
+                if (!Directory.Exists(imagesFolder))
+                {
+                    Directory.CreateDirectory(imagesFolder);
+                }
+
                 using var fileStream = new FileStream(filePath, FileMode.Create);
                 baseDto.Image.CopyTo(fileStream);
             }
